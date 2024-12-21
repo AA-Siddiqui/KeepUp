@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keep_up/pages/home_page.dart';
 import 'package:keep_up/pages/login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,7 +24,7 @@ class AuthGate extends StatelessWidget {
           return const LoginPage();
         }
 
-        return const Placeholder();
+        return const HomePage();
       },
     );
   }

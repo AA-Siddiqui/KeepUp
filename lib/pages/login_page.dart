@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:keep_up/auth/auth_service.dart';
 import 'package:keep_up/pages/register_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

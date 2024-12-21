@@ -29,13 +29,31 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_formKey.currentState!.validate()) {
       try {
-        await Supabase.instance.client.auth.signUp(
+        final response = await Supabase.instance.client.auth.signUp(
           email: email,
           password: password,
           data: {
             "display_name": name,
           },
         );
+        if (mounted && response.user != null) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Verification"),
+              content: const Text("Check your email for verification link"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+        }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
