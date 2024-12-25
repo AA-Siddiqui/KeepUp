@@ -17,8 +17,9 @@ class _HomePageState extends State<HomePage> {
           onPressed: () async {
             await Supabase.instance.client.auth.signOut();
           },
-          child: Text(Supabase.instance.client.auth.currentUser!.identities![0]
-              .identityData!["display_name"]),
+          // child: Text(Supabase.instance.client.auth.currentUser!.identities![0]
+          //     .identityData!["display_name"]),
+          child: Text("Logged In!"),
         ),
       ),
     );

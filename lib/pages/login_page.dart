@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keep_up/auth/auth_service.dart';
 import 'package:keep_up/pages/register_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -148,6 +150,28 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
+                  OutlinedButton(
+                    onPressed: signInWithGoogle,
+                    style: ButtonStyle(
+                      fixedSize: WidgetStatePropertyAll(
+                        Size(
+                          min(MediaQuery.sizeOf(context).width - 20, 500),
+                          20,
+                        ),
+                      ),
+                      backgroundColor: const WidgetStatePropertyAll(
+                        Colors.deepPurpleAccent,
+                      ),
+                    ),
+                    child: const Text(
+                      "Login with Google",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -182,6 +206,39 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void signInWithGoogle() async {
+    if (kIsWeb) {
+      await Supabase.instance.client.auth.signInWithOAuth(OAuthProvider.google);
+      return;
+    }
+    const webClientId =
+        '502027430645-kht5a922ucqcodlgnu7u9kadnu2efnvr.apps.googleusercontent.com';
+    const iosClientId =
+        '502027430645-td1e7k7bnl2dn7p8ll00j0vqma8qvrdp.apps.googleusercontent.com';
+
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: iosClientId,
+      serverClientId: webClientId,
+    );
+    final googleUser = await googleSignIn.signIn();
+    final googleAuth = await googleUser!.authentication;
+    final accessToken = googleAuth.accessToken;
+    final idToken = googleAuth.idToken;
+
+    if (accessToken == null) {
+      throw 'No Access Token found.';
+    }
+    if (idToken == null) {
+      throw 'No ID Token found.';
+    }
+
+    await Supabase.instance.client.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: accessToken,
     );
   }
 }
