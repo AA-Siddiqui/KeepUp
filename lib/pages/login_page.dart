@@ -223,7 +223,17 @@ class _LoginPageState extends State<LoginPage> {
       clientId: iosClientId,
       serverClientId: webClientId,
     );
-    final googleUser = await googleSignIn.signIn();
+    final GoogleSignInAccount? googleUser;
+    try {
+      googleUser = await googleSignIn.signIn();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
+      return;
+    }
     final googleAuth = await googleUser!.authentication;
     final accessToken = googleAuth.accessToken;
     final idToken = googleAuth.idToken;

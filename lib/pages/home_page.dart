@@ -19,7 +19,9 @@ class _HomePageState extends State<HomePage> {
           },
           // child: Text(Supabase.instance.client.auth.currentUser!.identities![0]
           //     .identityData!["display_name"]),
-          child: Text("Logged In!"),
+          child: Text(Supabase.instance.client.auth.currentUser!.identities![0]
+              .identityData!["full_name"]),
+          // child: const Text("Logged In!"),
         ),
       ),
     );

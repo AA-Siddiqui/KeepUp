@@ -10,7 +10,8 @@
       "type": "dart",
       "args": [
         "--dart-define-from-file",
-        ".env"
+        ".env",
+        "--web-port=3000"
       ]
     },
     {
