@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,9 +9,24 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+// TODO: local_notifications
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  final _navBarTimeout = const Duration(seconds: 10);
   final _pageController = PageController();
+  late final AnimationController _navBarAnimController;
   int _pageTabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _navBarAnimController = AnimationController(
+      vsync: this,
+      duration: _navBarTimeout,
+    );
+
+    _navBarAnimController.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,23 +84,44 @@ class _HomePageState extends State<HomePage> {
             }).toList() as List<Widget>,
           ),
         ),
-      ),
+      )
+          .animate(
+            controller: _navBarAnimController,
+          )
+          .slideY(
+            delay: _navBarTimeout,
+            begin: 0,
+            end: 1,
+            curve: Curves.decelerate,
+          ),
       body: PageView(
         controller: _pageController,
         onPageChanged: (newIndex) {
           setState(() {
             _pageTabIndex = newIndex;
+            _navBarAnimController.reverse().whenComplete(() {
+              _navBarAnimController.forward();
+            });
           });
         },
-        children: const [
-          Center(
-            child: Text("Page 1"),
+        children: [
+          Container(
+            color: Colors.amberAccent,
+            child: const Center(
+              child: Text("Page 1"),
+            ),
           ),
-          Center(
-            child: Text("Page 2"),
+          Container(
+            color: Colors.redAccent,
+            child: const Center(
+              child: Text("Page 2"),
+            ),
           ),
-          Center(
-            child: Text("Page 3"),
+          Container(
+            color: Colors.blueAccent,
+            child: const Center(
+              child: Text("Page 3"),
+            ),
           ),
         ],
       ),
