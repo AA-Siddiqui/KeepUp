@@ -246,12 +246,11 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     try {
-      final res = await Supabase.instance.client.auth.signInWithIdToken(
+      await Supabase.instance.client.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
         accessToken: accessToken,
       );
-      throw Exception(res);
     } on Exception catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
