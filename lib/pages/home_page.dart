@@ -1,152 +1,127 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final VoidCallback bringUpNavbar;
+  const HomePage({super.key, required this.bringUpNavbar});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-// TODO: local_notifications
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  final _navBarTimeout = const Duration(seconds: 10);
-  final _pageController = PageController();
-  late final AnimationController _navBarAnimController;
-  int _pageTabIndex = 0;
+class _HomePageState extends State<HomePage> {
+  final ScrollController _scrollController = ScrollController();
+  double _lastScrollPosition = 0;
+
+  final String subjectName = "Subject Name Very Long Extended";
+  final String teacherName = "Mr. Teacher Surname";
+
+  String _getClassIdentifier() {
+    const String term = "Spring 2025";
+    const String program = "BS Software Engineering";
+    const int semester = 5;
+    const String section = "B";
+
+    String shortHandTerm(String t) {
+      return "${t[0]}${t.substring(t.length - 2)}";
+    }
+
+    String shortHandProgram(String p) {
+      return p
+          .split('')
+          .where((c) => ((c.toUpperCase() == c) && (c.toLowerCase() != c)))
+          .join();
+    }
+
+    return "${shortHandProgram(program)}-${shortHandTerm(term)}-$semester$section";
+  }
 
   @override
   void initState() {
     super.initState();
-    _navBarAnimController = AnimationController(
-      vsync: this,
-      duration: _navBarTimeout,
-    );
+    _scrollController.addListener(_scrollListener);
+  }
 
-    _navBarAnimController.forward();
+  void _scrollListener() {
+    double currentPosition = _scrollController.position.pixels;
+    bool isScrollingUp = currentPosition + 10 < _lastScrollPosition;
+
+    if (isScrollingUp) {
+      widget.bringUpNavbar();
+    }
+    _lastScrollPosition = currentPosition;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          PageView(
-            controller: _pageController,
-            onPageChanged: (newIndex) {
-              setState(() {
-                _pageTabIndex = newIndex;
-                _navBarAnimController.reverse().whenComplete(() {
-                  _navBarAnimController.forward();
-                });
-              });
-            },
-            children: [
-              Container(
-                color: Colors.amberAccent,
-                child: const Center(
-                  child: Text("Page 1"),
-                ),
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        children: List.generate(
+          10,
+          (index) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                // color: Theme.of(context).chipTheme.backgroundColor,
+                // color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                color: Color(0xFF222222),
               ),
-              Container(
-                color: Colors.redAccent,
-                child: const Center(
-                  child: Text("Page 2"),
-                ),
-              ),
-              Container(
-                color: Colors.blueAccent,
-                child: const Center(
-                  child: Text("Page 3"),
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    {
-                      "icon": Icons.home,
-                      "label": "Home",
-                    },
-                    {
-                      "icon": Icons.article,
-                      "label": "Tasks",
-                    },
-                    {
-                      "icon": Icons.settings,
-                      "label": "Settings",
-                    },
-                  ].indexed.map((indexedItem) {
-                    final index = indexedItem.$1;
-                    final item = indexedItem.$2;
-
-                    return GestureDetector(
-                      onTap: () => setState(() {
-                        _pageTabIndex = index;
-                        _pageController.animateToPage(
-                          _pageTabIndex,
-                          duration: const Duration(milliseconds: 250),
-                          curve: Curves.easeInOut,
-                        );
-                      }),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color:
-                              _pageTabIndex == index ? Colors.redAccent : null,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(item["icon"] as IconData),
-                            Text(item["label"] as String),
-                          ],
-                        ),
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        subjectName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .apply(fontFamily: ""),
                       ),
-                    );
-                  }).toList() as List<Widget>,
-                ),
+                      Text(
+                        "${_getClassIdentifier()} • $teacherName",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .apply(fontFamily: ""),
+                      ),
+                    ],
+                  ),
+
+                  // const SizedBox(
+                  //   width: 50,
+                  // ),
+
+                  // Badge.count(
+                  //   count: index,
+                  //   padding: EdgeInsets.all(8),
+                  //   textStyle: Theme.of(),
+                  // ),
+
+                  Container(
+                    width: 25,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Center(
+                        child: Text(
+                      index.toString(),
+                      style: TextStyle(
+                          backgroundColor: Theme.of(context).primaryColor),
+                    )),
+                  ),
+                ],
               ),
-            )
-                .animate(
-                  controller: _navBarAnimController,
-                )
-                .slideY(
-                  delay: _navBarTimeout,
-                  begin: 0,
-                  end: 1,
-                  curve: Curves.decelerate,
-                ),
+            ),
           ),
-        ],
+        ),
       ),
-      // body: Center(
-      //   child: TextButton(
-      //     onPressed: () async {
-      //       await Supabase.instance.client.auth.signOut();
-      //     },
-      //     // child: Text(Supabase.instance.client.auth.currentUser!.identities![0]
-      //     //     .identityData!["display_name"]),
-      //     child: Text(Supabase.instance.client.auth.currentUser!.identities![0]
-      //         .identityData!["full_name"]),
-      //     // child: const Text("Logged In!"),
-      //   ),
-      // ),
     );
   }
 }

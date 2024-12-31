@@ -12,6 +12,7 @@ dependencies:
   flutter_animate: ^4.5.2
   google_sign_in: ^6.2.2
   supabase_flutter: ^2.8.2
+  json_theme_plus: ^6.7.1
 
 dev_dependencies:
   flutter_test:
@@ -20,3 +21,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/appainter_theme.json
+    - assets/appainter_light_theme.json
+    - assets/appainter_dark_theme.json
