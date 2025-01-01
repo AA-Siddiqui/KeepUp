@@ -63,9 +63,9 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                // color: Theme.of(context).chipTheme.backgroundColor,
+                color: Theme.of(context).colorScheme.secondaryContainer,
                 // color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-                color: const Color(0xFF222222),
+                // color: const Color(0xFF222222),
               ),
               padding: const EdgeInsets.all(8),
               child: Row(
@@ -86,35 +86,26 @@ class _HomePageState extends State<HomePage> {
                         "${_getClassIdentifier()} • $teacherName",
                         style: Theme.of(context)
                             .textTheme
-                            .titleMedium!
+                            .titleSmall!
                             .apply(fontFamily: ""),
                       ),
                     ],
                   ),
-
-                  // const SizedBox(
-                  //   width: 50,
-                  // ),
-
-                  // Badge.count(
-                  //   count: index,
-                  //   padding: EdgeInsets.all(8),
-                  //   textStyle: Theme.of(),
-                  // ),
-
                   Container(
                     width: 25,
                     height: 25,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     child: Center(
-                        child: Text(
-                      index.toString(),
-                      style: TextStyle(
-                          backgroundColor: Theme.of(context).primaryColor),
-                    )),
+                      child: Text(
+                        index.toString(),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

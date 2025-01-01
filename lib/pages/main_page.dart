@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:keep_up/pages/home_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MainPage extends StatefulWidget {
@@ -12,7 +13,7 @@ class MainPage extends StatefulWidget {
 
 // TODO: local_notifications and shared_preferences
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
-  final _navBarTimeout = const Duration(seconds: 3);
+  final _navBarTimeout = const Duration(seconds: 30);
   final _pageController = PageController(initialPage: 1);
   late final AnimationController _navBarAnimController;
   int _pageTabIndex = 1;
@@ -35,6 +36,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // drawer: Drawer(
+      //   child: DrawerButton(
+      //     onPressed: () async {
+      //       Supabase.instance.client.auth.signOut();
+      //     },
+      //   ),
+      // ),
       appBar: AppBar(
         title: Text(["Classes", "Tasks", "Settings"][_pageTabIndex]),
         actions: [
@@ -62,8 +70,21 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               Container(
                 color: Colors.redAccent,
-                child: const Center(
-                  child: Text("Page 2"),
+                child: Center(
+                  child: TextButton(
+                    child: const Text("Page 2"),
+                    onPressed: () async {
+                      final SupabaseClient supabaseClient =
+                          Supabase.instance.client;
+                      final x = await supabaseClient
+                          .schema("public")
+                          .from("Enrollment")
+                          .select("*")
+                          .eq("userId",
+                              supabaseClient.auth.currentUser?.id as Object);
+                      print("HOGTOG: $x");
+                    },
+                  ),
                 ),
               ),
               Container(
@@ -82,7 +103,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                  color: Theme.of(context).colorScheme.secondary,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                   // color: Colors.grey,
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -119,9 +143,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
+                          backgroundBlendMode: BlendMode.saturation,
                           color: _pageTabIndex == index
-                              ? Theme.of(context).focusColor
-                              : null,
+                              ? Theme.of(context).colorScheme.tertiary
+                              : Theme.of(context).colorScheme.secondary,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,

@@ -10,16 +10,38 @@ import 'package:json_theme_plus/json_theme_plus.dart';
 
 const supabaseUrl = 'https://dglxeiifpmrffzimtsgb.supabase.co';
 const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+
+const textColor = Color(0xFFe6efeb);
+const backgroundColor = Color(0xFF030705);
+const primaryColor = Color(0xFFa6cfbd);
+const primaryFgColor = Color(0xFF030705);
+const secondaryColor = Color(0xFF21563e);
+const secondaryFgColor = Color(0xFFe6efeb);
+const accentColor = Color(0xFF5cbd92);
+const accentFgColor = Color(0xFF030705);
+
+const colorScheme = ColorScheme(
+  brightness: Brightness.dark,
+  primary: primaryColor,
+  onPrimary: primaryFgColor,
+  secondary: secondaryColor,
+  onSecondary: secondaryFgColor,
+  tertiary: accentColor,
+  onTertiary: accentFgColor,
+  surface: backgroundColor,
+  onSurface: textColor,
+  error: Brightness.dark == Brightness.light
+      ? Color(0xffB3261E)
+      : Color(0xffF2B8B5),
+  onError: Brightness.dark == Brightness.light
+      ? Color(0xffFFFFFF)
+      : Color(0xff601410),
+);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb || !Platform.isWindows) {
     await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-    final SupabaseClient supabaseClient = Supabase.instance.client;
-    final x = await supabaseClient
-        .from("Enrollment")
-        .select()
-        .eq("userId", supabaseClient.auth.currentUser?.id as Object);
-    print(x);
   }
 
   runApp(MainApp(
@@ -30,13 +52,12 @@ Future<void> main() async {
         ),
       ),
     )!,
-    darkTheme: ThemeDecoder.decodeThemeData(
-      jsonDecode(
-        await rootBundle.loadString(
-          'assets/appainter_dark_theme.json',
-        ),
-      ),
-    )!,
+    darkTheme: ThemeData(colorScheme: colorScheme),
+    //     await rootBundle.loadString(
+    //       'assets/appainter_dark_theme.json',
+    //     ),
+    //   ),
+    // )!,
   ));
 }
 
