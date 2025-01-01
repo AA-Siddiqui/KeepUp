@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(8),
                 // color: Theme.of(context).chipTheme.backgroundColor,
                 // color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-                color: Color(0xFF222222),
+                color: const Color(0xFF222222),
               ),
               padding: const EdgeInsets.all(8),
               child: Row(
