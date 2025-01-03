@@ -40,9 +40,9 @@ const colorScheme = ColorScheme(
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb || !Platform.isWindows) {
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-  }
+  // if (kIsWeb || !Platform.isWindows) {
+  //   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+  // }
 
   runApp(MainApp(
     lightTheme: ThemeDecoder.decodeThemeData(
@@ -72,7 +72,21 @@ class MainApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       theme: lightTheme,
       darkTheme: darkTheme,
-      home: const AuthGate(),
+      home: (kIsWeb || !Platform.isWindows)
+          ? const AuthGate()
+          : FutureBuilder(
+              future: Supabase.initialize(
+                url: supabaseUrl,
+                anonKey: supabaseKey,
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                      body: Center(child: CircularProgressIndicator()));
+                }
+                return const AuthGate();
+              },
+            ),
     );
   }
 }
