@@ -56,11 +56,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       body: Center(
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.secondaryContainer,
             boxShadow: const [
               BoxShadow(
                 spreadRadius: 5,
@@ -137,9 +138,9 @@ class _LoginPageState extends State<LoginPage> {
                           20,
                         ),
                       ),
-                      backgroundColor: const WidgetStatePropertyAll(
-                        Colors.deepPurpleAccent,
-                      ),
+                      // backgroundColor: const WidgetStatePropertyAll(
+                      //   Colors.deepPurpleAccent,
+                      // ),
                     ),
                     child: const Text(
                       "Login",
@@ -159,8 +160,8 @@ class _LoginPageState extends State<LoginPage> {
                           20,
                         ),
                       ),
-                      backgroundColor: const WidgetStatePropertyAll(
-                        Colors.deepPurpleAccent,
+                      backgroundColor: WidgetStatePropertyAll(
+                        Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
                     child: const Text(

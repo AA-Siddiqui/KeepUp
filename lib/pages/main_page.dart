@@ -13,10 +13,10 @@ class MainPage extends StatefulWidget {
 
 // TODO: local_notifications and shared_preferences
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
-  final _navBarTimeout = const Duration(seconds: 30);
-  final _pageController = PageController(initialPage: 1);
+  final _navBarTimeout = const Duration(seconds: 3);
+  final _pageController = PageController(initialPage: 0);
   late final AnimationController _navBarAnimController;
-  int _pageTabIndex = 1;
+  int _pageTabIndex = 0;
 
   @override
   void initState() {
@@ -30,19 +30,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   void _bringUpNavbar() {
-    _navBarAnimController.reverse().whenComplete(_navBarAnimController.forward);
+    _navBarAnimController
+        .reverse()
+        .whenComplete(() => _navBarAnimController.forward());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: Drawer(
-      //   child: DrawerButton(
-      //     onPressed: () async {
-      //       Supabase.instance.client.auth.signOut();
-      //     },
-      //   ),
-      // ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              title: const Text("Logout"),
+              onTap: () {
+                Supabase.instance.client.auth.signOut();
+              },
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(["Classes", "Tasks", "Settings"][_pageTabIndex]),
         actions: [
@@ -74,14 +81,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   child: TextButton(
                     child: const Text("Page 2"),
                     onPressed: () async {
+                      print("HOGTOG: Start");
                       final SupabaseClient supabaseClient =
                           Supabase.instance.client;
                       final x = await supabaseClient
-                          .schema("public")
-                          .from("Enrollment")
-                          .select("*")
-                          .eq("userId",
-                              supabaseClient.auth.currentUser?.id as Object);
+                          .from("Class")
+                          .select("classId, subjectName, Enrollment(userId)");
+                      // .eq("userId",
+                      //     supabaseClient.auth.currentUser?.id as Object);
                       print("HOGTOG: $x");
                     },
                   ),
@@ -105,7 +112,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.error,
                   ),
                   // color: Colors.grey,
                   borderRadius: BorderRadius.circular(8),
